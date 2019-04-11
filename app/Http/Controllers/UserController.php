@@ -6,6 +6,7 @@ use App\User;
 use App\TeamMember;
 use Illuminate\Http\Request;
 
+
 class UserController extends Controller
 { 
     public function create(Request $request)
@@ -107,7 +108,23 @@ class UserController extends Controller
         }
     }
 
+    public function getUserTeams($id, Request $request)
+    {
 
+        $teams = User::select('users.id','users.name','teams.title')
+            ->where('users.id','=',$id)
+            ->join('team_members',function($join) {
+                  $join->on('team_members.user_id', '=','users.id');
+                
+            })
+            ->join('teams',function($join) {
+                 
+                  $join->on('team_members.team_id', '=','teams.id');
+                 
+            })->get();
+        
+        return response()->json($teams,200);
+    }
 
 
 

@@ -20,6 +20,5 @@ class TeamMember extends Model implements AuthenticatableContract, AuthorizableC
     protected $fillable = [
         'team_id', 'user_id',
     ];
-
-     
+  
 }
