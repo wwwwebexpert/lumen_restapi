@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Team;
 use App\User;
 use App\TeamMember;
+use App\Role;
+use App\UserRoleRelation;
 use Illuminate\Http\Request;
 
 
@@ -42,7 +44,7 @@ class UserController extends Controller
                 $user->delete();
                 return response()->json(array("message"=>"Deleted Successfully"), 200);
             }else{
-                return response()->json(array("message"=>"User doesn't exist"), 204);
+                return response()->json(array("message"=>"User doesn't exist"), 200);
             }
     }
 
@@ -54,14 +56,14 @@ class UserController extends Controller
     public function assignUserToTeams($id, Request $request)
     {
         $this->validate($request, [
-            'teams' => 'required',
+            'teams' => 'required'
         ]);
 
         $user_id  = $id;
 
         $user   = User::find($user_id);
         if(empty($user)){
-            return response()->json(array("message"=>"User doesn't exist"), 204); 
+            return response()->json(array("message"=>"User doesn't exist"), 200); 
         }
 
 
@@ -91,7 +93,7 @@ class UserController extends Controller
         return response()->json(array("message"=>$msgArr), 200);     
    
     }
-
+   
 
     public function isAlreadyMember($team_id, $user_id)
     {
@@ -126,6 +128,53 @@ class UserController extends Controller
         return response()->json($teams,200);
     }
 
+    public function assignRole($id, Request $request)
+    {
+        $this->validate($request, [
+            'role_id' => 'required',
+        ]);
 
+        $user_id  = $id;
+        $role_id  = $request->input('role_id');
 
+        if( $this->hasRole($role_id, $user_id) ){
+            return response()->json(array("message"=>"User already has this role."), 200); 
+        }
+
+        $user   = User::find($user_id);
+        
+        
+        if(empty($user)){
+            return response()->json(array("message"=>"User doesn't exist"), 200); 
+        } 
+
+        $role   = Role::find($role_id);
+        if(empty($role)){
+            return response()->json(array("message"=>"Role doesn't exist"), 200); 
+        }
+
+        $requestData = array();
+        $requestData['user_id'] = $user_id;
+        $requestData['role_id'] = $role_id; 
+        $member = UserRoleRelation::create($requestData);
+
+        return response()->json(array("message"=>"Role has been assined to user"), 200);     
+   
+    }
+
+    public function hasRole($role_id, $user_id)
+    {
+       
+        $role   = UserRoleRelation::where([
+                                    ['role_id','=',$role_id],
+                                    ['user_id','=',$user_id]
+                              ])->get()->first();
+      
+        
+        if(empty($role)){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

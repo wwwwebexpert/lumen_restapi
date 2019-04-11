@@ -23,6 +23,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   $router->get('users',  ['uses' => 'UserController@showAllUsers']);
   $router->put('users/assignUserToTeams/{id}', ['uses' => 'UserController@assignUserToTeams']);
   $router->get('users/getUserTeams/{id}', ['uses' => 'UserController@getUserTeams']);
+  $router->put('users/assignRole/{id}', ['uses' => 'UserController@assignRole']);
 
   $router->post('teams', ['uses' => 'TeamController@create']);
   $router->put('teams/assign-owner/{id}', ['uses' => 'TeamController@assignOwner']);
