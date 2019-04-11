@@ -30,4 +30,21 @@ class UserController extends Controller
 
         return response()->json($user, 200);
     }
+
+    public function delete($id)
+    {
+            $user = User::find($id);
+
+            if($user){
+                $user->delete();
+                return response('Deleted Successfully', 200); 
+            }else{
+                 return response('User doesn\'t exist.', 200);
+            }
+    }
+
+    public function showAllUsers()
+    {
+        return response()->json(User::all());
+    }
 }
