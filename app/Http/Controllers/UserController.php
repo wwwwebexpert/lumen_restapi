@@ -39,7 +39,7 @@ class UserController extends Controller
                 $user->delete();
                 return response('Deleted Successfully', 200); 
             }else{
-                 return response('User doesn\'t exist.', 200);
+                return response('User doesn\'t exist.', 200);
             }
     }
 
