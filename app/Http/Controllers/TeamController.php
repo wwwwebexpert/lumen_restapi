@@ -34,58 +34,40 @@ class TeamController extends Controller
             $team->update($request->all());
             return response()->json($team, 200);
         }else{
-            return response('Owner doesn\'t exist in User table.', 202);
+            return response()->json(array("message"=>"Owner doesn't exist in User table."), 204);
         }
    
     }
 
-    public function assignUsersToTeam($id, Request $request)
+    public function update($id, Request $request)
     {
         $this->validate($request, [
-            'user' => 'required',
+            'title' => 'required',
         ]);
+        $team = Team::findOrFail($id);
 
-        $user_id = $request->input('user');
-        $team_id = $id;
-        
-        if( $this->isAlreadyMember($team_id, $user_id) ){
-            return response('User already member of this team.', 202);
-        }
+        $team->update($request->all());
 
-        $team   = Team::find($team_id);
-        if( empty($team) ){
-            return response('Team ID doesn\'t exist.', 202);
-        }
-
-        $user   = User::find($user_id);
-        if(empty($user)){
-            return response('User ID doesn\'t exist.', 202);
-        }
-
-        $requestData = array();
-        $requestData['user_id'] = $user_id;
-        $requestData['team_id'] = $team_id; 
-        $member = TeamMember::create($requestData);
-
-        return response()->json($member, 200);     
-   
+        return response()->json($team, 200);
     }
 
-
-    public function isAlreadyMember($team_id, $user_id)
+    public function delete($id)
     {
-       
-        $member   = TeamMember::where([
-                                    ['team_id','=',$team_id],
-                                    ['user_id','=',$user_id]
-                              ])->get()->first();
+            $team = Team::find($id);
 
-        if(empty($member)){
-            return false;
-        }else{
-            return true;
-        }
+            if($team){
+                $team->delete();
+                return response()->json(array("message"=>"Deleted Successfully"), 200);
+            }else{
+                return response()->json(array("message"=>"Team doesn't exist"), 204);
+            }
     }
+
+    public function showAllTeams()
+    {
+        return response()->json(Team::all(),200);
+    }
+    
 
     
 }
