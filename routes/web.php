@@ -26,7 +26,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
   $router->put('users/assignRole/{id}', ['uses' => 'UserController@assignRole']);
 
   $router->post('teams', ['uses' => 'TeamController@create']);
-  $router->put('teams/assign-owner/{id}', ['uses' => 'TeamController@assignOwner']);
+  $router->put('teams/assignOwner/{id}', ['uses' => 'TeamController@assignOwner']);
   $router->put('teams/{id}', ['uses' => 'TeamController@update']);
   $router->delete('teams/{id}', ['uses' => 'TeamController@delete']);
   $router->get('teams',  ['uses' => 'TeamController@showAllTeams']);

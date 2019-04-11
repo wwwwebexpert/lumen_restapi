@@ -31,10 +31,13 @@ class TeamController extends Controller
         
         if($user){
             $team = Team::find($id);
-            $team->update($request->all());
-            return response()->json($team, 200);
+            if(empty($team)){
+                return response()->json(array("message"=>"Team ID doesn't exist in team table."), 200);
+            }
+            $team->update($request->all()); 
+            return response()->json(array("message"=>"Owner updated of team."), 200);
         }else{
-            return response()->json(array("message"=>"Owner doesn't exist in User table."), 204);
+            return response()->json(array("message"=>"Owner doesn't exist in User table."), 200);
         }
    
     }
